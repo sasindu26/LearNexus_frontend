@@ -6,48 +6,42 @@ import { api } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
 
 const AL_STREAMS = [
-  {
-    id: "Physical Science",
-    label: "Physical Science",
-    subjects: "Combined Maths · Physics · Chemistry",
-    icon: "⚛",
-  },
-  {
-    id: "Biological Science",
-    label: "Biological Science",
-    subjects: "Biology · Chemistry · Physics",
-    icon: "🧬",
-  },
-  {
-    id: "Technology",
-    label: "Technology",
-    subjects: "Engineering Technology · ICT · Science for Tech",
-    icon: "⚙",
-  },
-  {
-    id: "Commerce",
-    label: "Commerce",
-    subjects: "Accounting · Business Studies · Economics",
-    icon: "📈",
-  },
-  {
-    id: "Arts",
-    label: "Arts",
-    subjects: "Art · Geography · History · Languages…",
-    icon: "🎭",
-  },
-  {
-    id: "Other",
-    label: "Other / Not sat yet",
-    subjects: "I'll fill this in later",
-    icon: "◎",
-  },
+  { id: "Physical Science",   label: "Physical Science",    subjects: "Combined Maths · Physics · Chemistry",               icon: "⚛" },
+  { id: "Biological Science", label: "Biological Science",  subjects: "Biology · Chemistry · Physics",                      icon: "🧬" },
+  { id: "Technology",         label: "Technology",          subjects: "Engineering Technology · ICT · Science for Tech",    icon: "⚙" },
+  { id: "Commerce",           label: "Commerce",            subjects: "Accounting · Business Studies · Economics",          icon: "📈" },
+  { id: "Arts",               label: "Arts",                subjects: "Art · Geography · History · Languages…",             icon: "🎭" },
+  { id: "Other",              label: "Other / Not sat yet", subjects: "I'll fill this in later",                            icon: "◎" },
 ];
 
-const INTEREST_OPTIONS = [
-  "Software Engineering", "Data Science", "Networking", "Cybersecurity",
-  "AI & Machine Learning", "Web Development", "Mobile Development", "Cloud Computing",
+const INTERESTS = [
+  "Software & Apps", "Data & Analytics", "Networking & Infrastructure",
+  "Cybersecurity", "AI & Machine Learning", "Web Development",
+  "Mobile Development", "Cloud & DevOps", "Game Development", "UI / UX Design",
 ];
+
+const STRENGTHS = [
+  "Mathematics & Logic", "Problem Solving", "Creative Thinking",
+  "Science & Research", "Communication", "Teamwork & Leadership",
+  "Attention to Detail", "Fast Learner", "Drawing & Design", "Writing",
+];
+
+function ToggleChip({ label, selected, onClick }: { label: string; selected: boolean; onClick: () => void }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className="rounded-xl border px-3 py-2.5 text-sm font-medium text-left transition-all duration-200"
+      style={{
+        borderColor: selected ? "rgba(99,102,241,0.6)" : "rgba(255,255,255,0.06)",
+        background: selected ? "rgba(99,102,241,0.12)" : "rgba(255,255,255,0.02)",
+        color: selected ? "#a5b4fc" : "#94a3b8",
+      }}
+    >
+      {label}
+    </button>
+  );
+}
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -60,15 +54,16 @@ export default function RegisterPage() {
     name: "", email: "", password: "", phone: "",
     al_stream: "",
     interests: [] as string[],
+    strengths: [] as string[],
   });
 
-  const toggleInterest = (i: string) =>
+  const toggle = (field: "interests" | "strengths", val: string) =>
     setForm((f) => ({
       ...f,
-      interests: f.interests.includes(i) ? f.interests.filter((x) => x !== i) : [...f.interests, i],
+      [field]: f[field].includes(val) ? f[field].filter((x) => x !== val) : [...f[field], val],
     }));
 
-  const submit = async (e: React.FormEvent) => {
+  const submit = async (e: React.SyntheticEvent) => {
     e.preventDefault();
     setError(""); setLoading(true);
     try {
@@ -81,7 +76,7 @@ export default function RegisterPage() {
     } finally { setLoading(false); }
   };
 
-  const STEP_LABELS = ["Basic info", "A/L Stream", "Interests"];
+  const STEP_LABELS = ["Basic info", "A/L Stream", "About you"];
 
   return (
     <div className="relative min-h-screen flex items-center justify-center px-4 py-12">
@@ -113,14 +108,15 @@ export default function RegisterPage() {
           )}
 
           <form onSubmit={submit}>
-            {/* Step 1 — Basic info */}
+
+            {/* ── Step 1: Basic info ── */}
             {step === 1 && (
               <div className="space-y-4">
                 {[
-                  { label: "Full name", key: "name", type: "text", placeholder: "Kasun Perera" },
-                  { label: "Email address", key: "email", type: "email", placeholder: "kasun@example.com" },
-                  { label: "Password", key: "password", type: "password", placeholder: "Minimum 8 characters" },
-                  { label: "Phone (optional)", key: "phone", type: "tel", placeholder: "077 123 4567" },
+                  { label: "Full name",       key: "name",     type: "text",     placeholder: "Kasun Perera" },
+                  { label: "Email address",   key: "email",    type: "email",    placeholder: "kasun@example.com" },
+                  { label: "Password",        key: "password", type: "password", placeholder: "Minimum 8 characters" },
+                  { label: "Phone (optional)",key: "phone",    type: "tel",      placeholder: "077 123 4567" },
                 ].map(({ label, key, type, placeholder }) => (
                   <div key={key}>
                     <label className="label">{label}</label>
@@ -142,7 +138,7 @@ export default function RegisterPage() {
               </div>
             )}
 
-            {/* Step 2 — A/L Stream */}
+            {/* ── Step 2: A/L Stream ── */}
             {step === 2 && (
               <div className="space-y-5">
                 <div>
@@ -151,21 +147,16 @@ export default function RegisterPage() {
                     {AL_STREAMS.map((s) => {
                       const selected = form.al_stream === s.id;
                       return (
-                        <button
-                          key={s.id}
-                          type="button"
+                        <button key={s.id} type="button"
                           onClick={() => setForm({ ...form, al_stream: s.id })}
                           className="w-full flex items-center gap-4 rounded-xl border px-4 py-3.5 text-left transition-all duration-200"
                           style={{
                             borderColor: selected ? "rgba(99,102,241,0.6)" : "rgba(255,255,255,0.06)",
                             background: selected ? "rgba(99,102,241,0.12)" : "rgba(255,255,255,0.02)",
-                          }}
-                        >
+                          }}>
                           <span className="text-xl shrink-0">{s.icon}</span>
                           <div className="flex-1 min-w-0">
-                            <p className={`text-sm font-semibold ${selected ? "text-indigo-300" : "text-white"}`}>
-                              {s.label}
-                            </p>
+                            <p className={`text-sm font-semibold ${selected ? "text-indigo-300" : "text-white"}`}>{s.label}</p>
                             <p className="text-xs text-slate-500 mt-0.5">{s.subjects}</p>
                           </div>
                           {selected && (
@@ -185,32 +176,43 @@ export default function RegisterPage() {
               </div>
             )}
 
-            {/* Step 3 — Interests */}
+            {/* ── Step 3: Interests + Strengths ── */}
             {step === 3 && (
-              <div className="space-y-5">
+              <div className="space-y-6">
+
                 <div>
-                  <label className="label">Select your interests</label>
-                  <div className="grid grid-cols-2 gap-2 mt-2">
-                    {INTEREST_OPTIONS.map((i) => (
-                      <button key={i} type="button" onClick={() => toggleInterest(i)}
-                        className={`rounded-xl border px-3 py-2.5 text-left text-sm font-medium transition-all ${
-                          form.interests.includes(i)
-                            ? "border-indigo-500/60 bg-indigo-500/10 text-indigo-300"
-                            : "text-slate-400 hover:border-indigo-500/30 hover:text-slate-200"
-                        }`} style={{ borderColor: form.interests.includes(i) ? undefined : "rgba(255,255,255,0.06)" }}>
-                        {i}
-                      </button>
+                  <p className="text-white text-sm font-semibold mb-1">What topics do you enjoy?</p>
+                  <p className="text-slate-500 text-xs mb-3">Pick everything that sounds interesting to you.</p>
+                  <div className="grid grid-cols-2 gap-2">
+                    {INTERESTS.map((i) => (
+                      <ToggleChip key={i} label={i}
+                        selected={form.interests.includes(i)}
+                        onClick={() => toggle("interests", i)} />
                     ))}
                   </div>
                 </div>
+
+                <div>
+                  <p className="text-white text-sm font-semibold mb-1">What are you good at?</p>
+                  <p className="text-slate-500 text-xs mb-3">Be honest — the AI will use this to guide you.</p>
+                  <div className="grid grid-cols-2 gap-2">
+                    {STRENGTHS.map((s) => (
+                      <ToggleChip key={s} label={s}
+                        selected={form.strengths.includes(s)}
+                        onClick={() => toggle("strengths", s)} />
+                    ))}
+                  </div>
+                </div>
+
                 <div className="flex gap-3 pt-2">
                   <button type="button" onClick={() => setStep(2)} className="btn-ghost flex-1 py-2.5">← Back</button>
                   <button type="submit" disabled={loading} className="btn-primary flex-1 py-2.5">
-                    {loading ? "Creating…" : "Create account"}
+                    {loading ? "Creating…" : "Find my path →"}
                   </button>
                 </div>
               </div>
             )}
+
           </form>
 
           <p className="mt-6 text-center text-sm text-slate-500">
