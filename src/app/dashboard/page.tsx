@@ -19,6 +19,12 @@ interface Engagement {
   total_events: number;
 }
 
+const TIER_COLORS: Record<string, string> = {
+  high: "text-emerald-400 bg-emerald-500/10 border-emerald-500/20",
+  medium: "text-amber-400 bg-amber-500/10 border-amber-500/20",
+  low: "text-slate-400 bg-white/05 border-white/10",
+};
+
 export default function DashboardPage() {
   const { profile, loading } = useAuth();
   const router = useRouter();
@@ -41,131 +47,129 @@ export default function DashboardPage() {
 
   if (loading || !profile) {
     return (
-      <div className="flex min-h-screen items-center justify-center text-gray-400">
-        Loading…
+      <div className="relative min-h-screen flex items-center justify-center">
+        <div className="mesh-bg" />
+        <div className="relative z-10 text-slate-400 text-sm">Loading…</div>
       </div>
     );
   }
 
-  return (
-    <>
-      <Navbar />
-      <main className="mx-auto max-w-5xl px-6 py-10">
-        {/* Welcome */}
-        <div className="rounded-2xl bg-gradient-to-r from-indigo-600 to-violet-600 p-8 text-white">
-          <p className="text-indigo-100 text-sm font-medium">Welcome back 👋</p>
-          <h1 className="mt-1 text-3xl font-bold">{profile.name}</h1>
-          {profile.targetCourse && (
-            <p className="mt-2 text-indigo-100">
-              Enrolled in <span className="font-semibold text-white">{profile.targetCourse}</span>
-            </p>
-          )}
-        </div>
+  const tierClass = TIER_COLORS[engagement?.risk_tier ?? "low"] ?? TIER_COLORS.low;
 
-        {/* Progress + stats */}
-        <div className="mt-6 grid gap-4 sm:grid-cols-3">
-          <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm sm:col-span-2">
-            <p className="text-sm font-medium text-gray-500">Course progress</p>
-            {progress ? (
-              <>
-                <p className="mt-2 text-4xl font-bold text-indigo-600">
-                  {progress.percentage}%
-                </p>
-                <div className="mt-3 h-2 w-full rounded-full bg-gray-100">
-                  <div
-                    className="h-2 rounded-full bg-indigo-500 transition-all"
-                    style={{ width: `${progress.percentage}%` }}
-                  />
-                </div>
-                <p className="mt-2 text-xs text-gray-400">
-                  {progress.completedModules} / {progress.totalModules} modules completed
-                </p>
-              </>
-            ) : (
-              <p className="mt-2 text-sm text-gray-400">Loading progress…</p>
+  return (
+    <div className="relative min-h-screen">
+      <div className="mesh-bg" />
+      <div className="relative z-10">
+        <Navbar />
+        <main className="mx-auto max-w-5xl px-6 py-10">
+
+          {/* Welcome banner */}
+          <div className="fade-up relative overflow-hidden rounded-2xl p-8"
+            style={{ background: "linear-gradient(135deg, rgba(99,102,241,0.25) 0%, rgba(139,92,246,0.2) 100%)", border: "1px solid rgba(99,102,241,0.3)" }}>
+            <div className="absolute inset-0 pointer-events-none"
+              style={{ background: "radial-gradient(ellipse 60% 80% at 90% 50%, rgba(139,92,246,0.15) 0%, transparent 70%)" }} />
+            <p className="text-indigo-300 text-sm font-medium">Welcome back</p>
+            <h1 className="mt-1 text-3xl font-bold text-white">{profile.name}</h1>
+            {profile.targetCourse && (
+              <p className="mt-2 text-indigo-200 text-sm">
+                Enrolled in <span className="font-semibold text-white">{profile.targetCourse}</span>
+              </p>
             )}
           </div>
 
-          <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm space-y-4">
-            <div>
-              <p className="text-sm font-medium text-gray-500">Career goal</p>
-              <p className="mt-1 text-base font-semibold text-gray-800">
-                {profile.careerGoal || "Not set"}
-              </p>
-            </div>
-            <div>
-              <p className="text-sm font-medium text-gray-500">Engagement score</p>
-              {engagement ? (
-                <div className="mt-1 flex items-center gap-2">
-                  <span className="text-2xl font-bold text-indigo-600">{engagement.score}</span>
-                  <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${
-                    engagement.risk_tier === "high"
-                      ? "bg-emerald-50 text-emerald-700"
-                      : engagement.risk_tier === "medium"
-                      ? "bg-amber-50 text-amber-700"
-                      : "bg-gray-100 text-gray-500"
-                  }`}>
-                    {engagement.risk_tier} activity
-                  </span>
-                </div>
+          {/* Stats row */}
+          <div className="mt-6 grid gap-4 sm:grid-cols-3">
+            {/* Progress card */}
+            <div className="glass rounded-2xl p-6 sm:col-span-2">
+              <p className="text-xs font-medium text-slate-500 uppercase tracking-wider">Course Progress</p>
+              {progress ? (
+                <>
+                  <p className="mt-3 text-4xl font-bold grad-text">{progress.percentage}%</p>
+                  <div className="progress-bar mt-4">
+                    <div className="progress-fill" style={{ width: `${progress.percentage}%` }} />
+                  </div>
+                  <p className="mt-2 text-xs text-slate-500">
+                    {progress.completedModules} / {progress.totalModules} modules completed
+                  </p>
+                </>
               ) : (
-                <p className="mt-1 text-sm text-gray-400">—</p>
+                <p className="mt-3 text-sm text-slate-500">Loading progress…</p>
               )}
             </div>
-            <div>
-              <p className="text-sm font-medium text-gray-500">Interests</p>
-              <div className="mt-1 flex flex-wrap gap-1">
-                {(profile.interests ?? []).slice(0, 4).map((i) => (
-                  <span key={i} className="rounded-full bg-indigo-50 px-2 py-0.5 text-xs font-medium text-indigo-600">
-                    {i}
-                  </span>
-                ))}
-                {profile.interests?.length === 0 && (
-                  <span className="text-xs text-gray-400">None set</span>
+
+            {/* Engagement card */}
+            <div className="glass rounded-2xl p-6 space-y-5">
+              <div>
+                <p className="text-xs font-medium text-slate-500 uppercase tracking-wider">Career Goal</p>
+                <p className="mt-2 text-sm font-semibold text-white">{profile.careerGoal || "Not set"}</p>
+              </div>
+              <div>
+                <p className="text-xs font-medium text-slate-500 uppercase tracking-wider">Engagement</p>
+                {engagement ? (
+                  <div className="mt-2 flex items-center gap-2">
+                    <span className="text-2xl font-bold grad-text">{engagement.score}</span>
+                    <span className={`rounded-full border px-2 py-0.5 text-xs font-medium ${tierClass}`}>
+                      {engagement.risk_tier} activity
+                    </span>
+                  </div>
+                ) : (
+                  <p className="mt-2 text-sm text-slate-500">—</p>
                 )}
+              </div>
+              <div>
+                <p className="text-xs font-medium text-slate-500 uppercase tracking-wider">Interests</p>
+                <div className="mt-2 flex flex-wrap gap-1">
+                  {(profile.interests ?? []).slice(0, 4).map((i) => (
+                    <span key={i} className="tag">{i}</span>
+                  ))}
+                  {(profile.interests?.length ?? 0) === 0 && (
+                    <span className="text-xs text-slate-500">None set</span>
+                  )}
+                </div>
               </div>
             </div>
           </div>
-        </div>
 
-        {/* Quick actions */}
-        <h2 className="mt-10 text-lg font-semibold text-gray-900">Quick actions</h2>
-        <div className="mt-4 grid gap-4 sm:grid-cols-3">
-          {[
-            {
-              href: "/chat",
-              icon: "💬",
-              title: "AI Advisor",
-              desc: "Ask about modules, careers, or study tips",
-              color: "bg-indigo-50 hover:bg-indigo-100",
-            },
-            {
-              href: "/modules",
-              icon: "📚",
-              title: "Browse Modules",
-              desc: "Explore all course modules and topics",
-              color: "bg-violet-50 hover:bg-violet-100",
-            },
-            {
-              href: "/roadmap",
-              icon: "🎯",
-              title: "Career Roadmap",
-              desc: "See job role matches and recommended modules",
-              color: "bg-amber-50 hover:bg-amber-100",
-            },
-          ].map((action) => (
-            <Link
-              key={action.href}
-              href={action.href}
-              className={`rounded-2xl border border-gray-200 p-6 transition-colors ${action.color}`}
-            >
-              <span className="text-3xl">{action.icon}</span>
-              <p className="mt-3 font-semibold text-gray-900">{action.title}</p>
-              <p className="mt-1 text-sm text-gray-500">{action.desc}</p>
-            </Link>
-          ))}
-        </div>
-      </main>
-    </>
+          {/* Quick actions */}
+          <h2 className="mt-10 text-xs font-semibold uppercase tracking-widest text-slate-500">Quick Actions</h2>
+          <div className="mt-4 grid gap-4 sm:grid-cols-3">
+            {[
+              {
+                href: "/chat",
+                icon: "◈",
+                title: "AI Advisor",
+                desc: "Ask about modules, careers, or study tips",
+                glow: "rgba(99,102,241,0.15)",
+              },
+              {
+                href: "/modules",
+                icon: "⬡",
+                title: "Browse Modules",
+                desc: "Explore all course modules and topics",
+                glow: "rgba(139,92,246,0.15)",
+              },
+              {
+                href: "/roadmap",
+                icon: "◉",
+                title: "Career Roadmap",
+                desc: "See job role matches and required modules",
+                glow: "rgba(59,130,246,0.15)",
+              },
+            ].map((action) => (
+              <Link
+                key={action.href}
+                href={action.href}
+                className="glass rounded-2xl p-6 transition-all duration-300 hover:border-indigo-500/30 hover:-translate-y-1"
+                style={{ boxShadow: `inset 0 0 30px ${action.glow}` }}
+              >
+                <span className="text-2xl font-bold grad-text">{action.icon}</span>
+                <p className="mt-4 font-semibold text-white">{action.title}</p>
+                <p className="mt-1 text-sm text-slate-400 leading-relaxed">{action.desc}</p>
+              </Link>
+            ))}
+          </div>
+        </main>
+      </div>
+    </div>
   );
 }

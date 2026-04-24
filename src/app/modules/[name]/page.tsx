@@ -21,6 +21,12 @@ interface Article {
   tags: string[];
 }
 
+const DIFF_COLORS: Record<string, string> = {
+  Beginner: "text-emerald-400 bg-emerald-500/10 border-emerald-500/20",
+  Intermediate: "text-amber-400 bg-amber-500/10 border-amber-500/20",
+  Advanced: "text-red-400 bg-red-500/10 border-red-500/20",
+};
+
 export default function ModuleDetailPage() {
   const { name } = useParams<{ name: string }>();
   const decoded = decodeURIComponent(name);
@@ -46,99 +52,96 @@ export default function ModuleDetailPage() {
   }, [decoded]);
 
   return (
-    <>
-      <Navbar />
-      <main className="mx-auto max-w-4xl px-6 py-10">
-        <Link href="/modules" className="text-sm text-indigo-600 hover:underline">
-          ← Back to modules
-        </Link>
+    <div className="relative min-h-screen">
+      <div className="mesh-bg" />
+      <div className="relative z-10">
+        <Navbar />
+        <main className="mx-auto max-w-4xl px-6 py-10">
 
-        <h1 className="mt-4 text-3xl font-bold text-gray-900">{decoded}</h1>
+          <Link href="/modules" className="inline-flex items-center gap-1 text-sm text-indigo-400 hover:text-indigo-300 transition-colors">
+            ← Back to modules
+          </Link>
 
-        {/* Topics */}
-        <section className="mt-8">
-          <h2 className="text-lg font-semibold text-gray-900">
-            Topics{" "}
-            {!loadingT && (
-              <span className="ml-1 text-sm font-normal text-gray-400">
-                ({topics.length})
-              </span>
-            )}
-          </h2>
+          <div className="mt-4 fade-up">
+            <h1 className="text-3xl font-bold text-white">{decoded}</h1>
+          </div>
 
-          {loadingT ? (
-            <p className="mt-4 text-sm text-gray-400">Loading topics…</p>
-          ) : topics.length === 0 ? (
-            <p className="mt-4 text-sm text-gray-400">No topics found for this module.</p>
-          ) : (
-            <div className="mt-4 space-y-2">
-              {topics.map((t) => (
-                <div
-                  key={t.id}
-                  className="rounded-xl border border-gray-200 bg-white shadow-sm overflow-hidden"
-                >
-                  <button
-                    onClick={() => setExpanded(expanded === t.id ? null : t.id)}
-                    className="flex w-full items-center justify-between px-5 py-4 text-left"
-                  >
-                    <span className="font-medium text-gray-900">{t.name}</span>
-                    <span className="ml-3 shrink-0 text-gray-400">
-                      {expanded === t.id ? "▲" : "▼"}
-                    </span>
-                  </button>
-                  {expanded === t.id && (
-                    <div className="border-t border-gray-100 px-5 py-4">
-                      <p className="text-sm text-gray-600 leading-relaxed">{t.description}</p>
-                      <div className="mt-3 flex gap-3">
-                        <span className="rounded-full bg-indigo-50 px-3 py-1 text-xs font-medium text-indigo-600">
-                          {t.difficulty}
-                        </span>
-                        <span className="rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-600">
-                          {t.timeEstimate}
-                        </span>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              ))}
+          {/* Topics */}
+          <section className="mt-10">
+            <div className="flex items-center gap-2 mb-5">
+              <h2 className="text-sm font-semibold uppercase tracking-widest text-slate-500">Topics</h2>
+              {!loadingT && (
+                <span className="tag">{topics.length}</span>
+              )}
             </div>
-          )}
-        </section>
 
-        {/* Articles */}
-        {articles.length > 0 && (
-          <section className="mt-12">
-            <h2 className="text-lg font-semibold text-gray-900">
-              Related Articles{" "}
-              <span className="ml-1 text-sm font-normal text-gray-400">({articles.length})</span>
-            </h2>
-            <div className="mt-4 grid gap-4 sm:grid-cols-2">
-              {articles.slice(0, 6).map((a) => (
-                <a
-                  key={a.url}
-                  href={a.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm hover:border-indigo-300 hover:shadow-md transition-all"
-                >
-                  <p className="font-medium text-gray-900 leading-snug line-clamp-2">{a.title}</p>
-                  <p className="mt-2 text-xs text-gray-500 line-clamp-2">{a.description}</p>
-                  <div className="mt-3 flex flex-wrap gap-1">
-                    {(a.tags ?? []).slice(0, 3).map((tag) => (
-                      <span
-                        key={tag}
-                        className="rounded-full bg-gray-100 px-2 py-0.5 text-xs text-gray-500"
-                      >
-                        #{tag}
+            {loadingT ? (
+              <p className="text-sm text-slate-500">Loading topics…</p>
+            ) : topics.length === 0 ? (
+              <p className="text-sm text-slate-500">No topics found for this module.</p>
+            ) : (
+              <div className="space-y-2">
+                {topics.map((t) => (
+                  <div key={t.id} className="glass rounded-xl overflow-hidden">
+                    <button
+                      onClick={() => setExpanded(expanded === t.id ? null : t.id)}
+                      className="flex w-full items-center justify-between px-5 py-4 text-left hover:bg-white/[0.02] transition-colors"
+                    >
+                      <span className="text-sm font-medium text-white">{t.name}</span>
+                      <span className="ml-3 shrink-0 text-slate-500 text-xs transition-transform duration-200"
+                        style={{ transform: expanded === t.id ? "rotate(180deg)" : "rotate(0)" }}>
+                        ▼
                       </span>
-                    ))}
+                    </button>
+                    {expanded === t.id && (
+                      <div className="border-t border-white/[0.06] px-5 py-4">
+                        <p className="text-sm text-slate-400 leading-relaxed">{t.description}</p>
+                        <div className="mt-3 flex gap-2 flex-wrap">
+                          <span className={`rounded-full border px-3 py-1 text-xs font-medium ${DIFF_COLORS[t.difficulty] ?? "text-slate-400 bg-white/05 border-white/10"}`}>
+                            {t.difficulty}
+                          </span>
+                          <span className="rounded-full border border-white/10 bg-white/05 px-3 py-1 text-xs font-medium text-slate-400">
+                            {t.timeEstimate}
+                          </span>
+                        </div>
+                      </div>
+                    )}
                   </div>
-                </a>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
           </section>
-        )}
-      </main>
-    </>
+
+          {/* Articles */}
+          {articles.length > 0 && (
+            <section className="mt-12">
+              <div className="flex items-center gap-2 mb-5">
+                <h2 className="text-sm font-semibold uppercase tracking-widest text-slate-500">Related Articles</h2>
+                <span className="tag">{articles.length}</span>
+              </div>
+              <div className="grid gap-4 sm:grid-cols-2">
+                {articles.slice(0, 6).map((a) => (
+                  <a
+                    key={a.url}
+                    href={a.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="glass rounded-xl p-5 transition-all duration-200 hover:border-indigo-500/30 hover:-translate-y-0.5 block"
+                  >
+                    <p className="text-sm font-medium text-white leading-snug line-clamp-2">{a.title}</p>
+                    <p className="mt-2 text-xs text-slate-500 line-clamp-2">{a.description}</p>
+                    <div className="mt-3 flex flex-wrap gap-1">
+                      {(a.tags ?? []).slice(0, 3).map((tag) => (
+                        <span key={tag} className="tag">#{tag}</span>
+                      ))}
+                    </div>
+                  </a>
+                ))}
+              </div>
+            </section>
+          )}
+        </main>
+      </div>
+    </div>
   );
 }

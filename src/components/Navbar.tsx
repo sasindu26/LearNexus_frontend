@@ -1,51 +1,53 @@
 "use client";
 import Link from "next/link";
 import { useAuth } from "@/lib/auth";
+import { usePathname } from "next/navigation";
 
 export default function Navbar() {
   const { profile, logout, loading } = useAuth();
+  const path = usePathname();
+
+  const link = (href: string, label: string) => (
+    <Link
+      href={href}
+      className={`text-sm font-medium transition-colors ${
+        path === href ? "text-indigo-400" : "text-slate-400 hover:text-slate-100"
+      }`}
+    >
+      {label}
+    </Link>
+  );
 
   return (
-    <nav className="sticky top-0 z-50 border-b border-gray-200 bg-white/90 backdrop-blur">
-      <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-3">
+    <nav className="sticky top-0 z-50 border-b border-white/[0.06] bg-[#080c14]/80 backdrop-blur-xl">
+      <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-3.5">
         <Link href="/" className="flex items-center gap-2">
-          <span className="text-xl font-bold text-indigo-600">LearNexus</span>
+          <div className="h-7 w-7 rounded-lg bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center">
+            <span className="text-xs font-bold text-white">LN</span>
+          </div>
+          <span className="font-bold text-white tracking-tight">LearNexus</span>
         </Link>
 
-        <div className="flex items-center gap-6 text-sm font-medium">
-          <Link href="/modules" className="text-gray-600 hover:text-indigo-600 transition-colors">
-            Modules
-          </Link>
-
+        <div className="flex items-center gap-6">
+          {link("/modules", "Modules")}
           {!loading && (
             <>
               {profile ? (
                 <>
-                  <Link href="/chat" className="text-gray-600 hover:text-indigo-600 transition-colors">
-                    AI Chat
-                  </Link>
-                  <Link href="/roadmap" className="text-gray-600 hover:text-indigo-600 transition-colors">
-                    Roadmap
-                  </Link>
-                  <Link href="/dashboard" className="text-gray-600 hover:text-indigo-600 transition-colors">
-                    Dashboard
-                  </Link>
+                  {link("/chat", "AI Chat")}
+                  {link("/roadmap", "Roadmap")}
+                  {link("/dashboard", "Dashboard")}
                   <button
                     onClick={logout}
-                    className="rounded-full bg-gray-100 px-4 py-1.5 text-gray-700 hover:bg-gray-200 transition-colors"
+                    className="text-sm font-medium text-slate-400 hover:text-slate-100 transition-colors"
                   >
                     Log out
                   </button>
                 </>
               ) : (
                 <>
-                  <Link href="/login" className="text-gray-600 hover:text-indigo-600 transition-colors">
-                    Log in
-                  </Link>
-                  <Link
-                    href="/register"
-                    className="rounded-full bg-indigo-600 px-4 py-1.5 text-white hover:bg-indigo-700 transition-colors"
-                  >
+                  {link("/login", "Log in")}
+                  <Link href="/register" className="btn-primary text-sm py-2 px-5">
                     Get started
                   </Link>
                 </>

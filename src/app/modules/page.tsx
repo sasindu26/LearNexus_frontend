@@ -36,52 +36,67 @@ export default function ModulesPage() {
   }, {});
 
   return (
-    <>
-      <Navbar />
-      <main className="mx-auto max-w-5xl px-6 py-10">
-        <h1 className="text-3xl font-bold text-gray-900">Course Modules</h1>
-        <p className="mt-2 text-gray-500">
-          {modules.length} modules across {Object.keys(grouped).length} courses
-        </p>
+    <div className="relative min-h-screen">
+      <div className="mesh-bg" />
+      <div className="relative z-10">
+        <Navbar />
+        <main className="mx-auto max-w-5xl px-6 py-10">
 
-        <input
-          type="text"
-          placeholder="Search modules or courses…"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="mt-6 w-full rounded-xl border border-gray-300 px-4 py-3 text-sm outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition"
-        />
-
-        {loading ? (
-          <div className="mt-12 text-center text-gray-400">Loading modules…</div>
-        ) : (
-          <div className="mt-8 space-y-10">
-            {Object.entries(grouped).map(([course, mods]) => (
-              <div key={course}>
-                <h2 className="mb-4 text-sm font-semibold uppercase tracking-widest text-indigo-500">
-                  {course}
-                </h2>
-                <div className="grid gap-3 sm:grid-cols-2">
-                  {mods.map((m) => (
-                    <Link
-                      key={m.name}
-                      href={`/modules/${encodeURIComponent(m.name)}`}
-                      className="flex items-center justify-between rounded-xl border border-gray-200 bg-white px-5 py-4 shadow-sm hover:border-indigo-300 hover:shadow-md transition-all"
-                    >
-                      <span className="font-medium text-gray-900">{m.name}</span>
-                      {m.year && (
-                        <span className="ml-2 shrink-0 rounded-full bg-indigo-50 px-2 py-0.5 text-xs font-medium text-indigo-600">
-                          Year {m.year}
-                        </span>
-                      )}
-                    </Link>
-                  ))}
-                </div>
-              </div>
-            ))}
+          {/* Header */}
+          <div className="fade-up">
+            <span className="tag">Knowledge Graph</span>
+            <h1 className="mt-4 text-3xl font-bold text-white">Course Modules</h1>
+            <p className="mt-2 text-slate-400 text-sm">
+              {modules.length} modules across{" "}
+              {Object.keys(
+                modules.reduce<Record<string, boolean>>((a, m) => { a[m.course ?? "Other"] = true; return a; }, {})
+              ).length} courses
+            </p>
           </div>
-        )}
-      </main>
-    </>
+
+          {/* Search */}
+          <div className="mt-6 relative">
+            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 text-sm">⌕</span>
+            <input
+              type="text"
+              placeholder="Search modules or courses…"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="input-field pl-10"
+            />
+          </div>
+
+          {loading ? (
+            <div className="mt-16 text-center text-slate-500 text-sm">Loading modules…</div>
+          ) : Object.keys(grouped).length === 0 ? (
+            <div className="mt-16 text-center text-slate-500 text-sm">No modules found.</div>
+          ) : (
+            <div className="mt-10 space-y-10">
+              {Object.entries(grouped).map(([course, mods]) => (
+                <div key={course}>
+                  <p className="mb-4 text-xs font-semibold uppercase tracking-widest text-indigo-400">
+                    {course}
+                  </p>
+                  <div className="grid gap-3 sm:grid-cols-2">
+                    {mods.map((m) => (
+                      <Link
+                        key={m.name}
+                        href={`/modules/${encodeURIComponent(m.name)}`}
+                        className="glass rounded-xl px-5 py-4 flex items-center justify-between transition-all duration-200 hover:border-indigo-500/30 hover:-translate-y-0.5"
+                      >
+                        <span className="text-sm font-medium text-white">{m.name}</span>
+                        {m.year && (
+                          <span className="ml-3 shrink-0 tag">Year {m.year}</span>
+                        )}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </main>
+      </div>
+    </div>
   );
 }
