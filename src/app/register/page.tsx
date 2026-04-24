@@ -5,17 +5,49 @@ import { useRouter } from "next/navigation";
 import { api } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
 
-const GRADES = ["A", "B", "C", "S", "F"];
-const SUBJECTS = [
-  "Physics", "Chemistry", "Biology", "Mathematics", "Combined Maths",
-  "ICT", "Economics", "Accounting", "Business Studies", "Engineering Technology",
+const AL_STREAMS = [
+  {
+    id: "Physical Science",
+    label: "Physical Science",
+    subjects: "Combined Maths · Physics · Chemistry",
+    icon: "⚛",
+  },
+  {
+    id: "Biological Science",
+    label: "Biological Science",
+    subjects: "Biology · Chemistry · Physics",
+    icon: "🧬",
+  },
+  {
+    id: "Technology",
+    label: "Technology",
+    subjects: "Engineering Technology · ICT · Science for Tech",
+    icon: "⚙",
+  },
+  {
+    id: "Commerce",
+    label: "Commerce",
+    subjects: "Accounting · Business Studies · Economics",
+    icon: "📈",
+  },
+  {
+    id: "Arts",
+    label: "Arts",
+    subjects: "Art · Geography · History · Languages…",
+    icon: "🎭",
+  },
+  {
+    id: "Other",
+    label: "Other / Not sat yet",
+    subjects: "I'll fill this in later",
+    icon: "◎",
+  },
 ];
+
 const INTEREST_OPTIONS = [
   "Software Engineering", "Data Science", "Networking", "Cybersecurity",
   "AI & Machine Learning", "Web Development", "Mobile Development", "Cloud Computing",
 ];
-
-interface ALRow { subject: string; grade: string }
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -26,8 +58,8 @@ export default function RegisterPage() {
 
   const [form, setForm] = useState({
     name: "", email: "", password: "", phone: "",
-    career_goal: "", interests: [] as string[],
-    al_results: [{ subject: SUBJECTS[0], grade: "A" }] as ALRow[],
+    al_stream: "",
+    interests: [] as string[],
   });
 
   const toggleInterest = (i: string) =>
@@ -35,11 +67,6 @@ export default function RegisterPage() {
       ...f,
       interests: f.interests.includes(i) ? f.interests.filter((x) => x !== i) : [...f.interests, i],
     }));
-
-  const addAL = () => setForm((f) => ({ ...f, al_results: [...f.al_results, { subject: SUBJECTS[0], grade: "A" }] }));
-  const removeAL = (idx: number) => setForm((f) => ({ ...f, al_results: f.al_results.filter((_, i) => i !== idx) }));
-  const updateAL = (idx: number, key: keyof ALRow, val: string) =>
-    setForm((f) => { const al = [...f.al_results]; al[idx] = { ...al[idx], [key]: val }; return { ...f, al_results: al }; });
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -54,7 +81,7 @@ export default function RegisterPage() {
     } finally { setLoading(false); }
   };
 
-  const STEP_LABELS = ["Basic info", "A/L results", "Interests"];
+  const STEP_LABELS = ["Basic info", "A/L Stream", "Interests"];
 
   return (
     <div className="relative min-h-screen flex items-center justify-center px-4 py-12">
@@ -86,6 +113,7 @@ export default function RegisterPage() {
           )}
 
           <form onSubmit={submit}>
+            {/* Step 1 — Basic info */}
             {step === 1 && (
               <div className="space-y-4">
                 {[
@@ -114,48 +142,50 @@ export default function RegisterPage() {
               </div>
             )}
 
+            {/* Step 2 — A/L Stream */}
             {step === 2 && (
               <div className="space-y-5">
                 <div>
-                  <label className="label">Career goal</label>
-                  <input type="text" value={form.career_goal}
-                    onChange={(e) => setForm({ ...form, career_goal: e.target.value })}
-                    className="input-field" placeholder="e.g. Software Engineer, Data Scientist" />
-                </div>
-                <div>
-                  <div className="flex items-center justify-between mb-3">
-                    <label className="label mb-0">A/L Results</label>
-                    <button type="button" onClick={addAL}
-                      className="text-xs text-indigo-400 hover:text-indigo-300 font-medium transition-colors">
-                      + Add subject
-                    </button>
-                  </div>
+                  <label className="label mb-3 block">Which A/L stream did you study?</label>
                   <div className="space-y-2">
-                    {form.al_results.map((row, idx) => (
-                      <div key={idx} className="flex gap-2">
-                        <select value={row.subject} onChange={(e) => updateAL(idx, "subject", e.target.value)}
-                          className="input-field flex-1 py-2">
-                          {SUBJECTS.map((s) => <option key={s} className="bg-[#0d1117]">{s}</option>)}
-                        </select>
-                        <select value={row.grade} onChange={(e) => updateAL(idx, "grade", e.target.value)}
-                          className="input-field w-20 py-2">
-                          {GRADES.map((g) => <option key={g} className="bg-[#0d1117]">{g}</option>)}
-                        </select>
-                        {form.al_results.length > 1 && (
-                          <button type="button" onClick={() => removeAL(idx)}
-                            className="text-slate-600 hover:text-red-400 px-2 transition-colors text-lg">×</button>
-                        )}
-                      </div>
-                    ))}
+                    {AL_STREAMS.map((s) => {
+                      const selected = form.al_stream === s.id;
+                      return (
+                        <button
+                          key={s.id}
+                          type="button"
+                          onClick={() => setForm({ ...form, al_stream: s.id })}
+                          className="w-full flex items-center gap-4 rounded-xl border px-4 py-3.5 text-left transition-all duration-200"
+                          style={{
+                            borderColor: selected ? "rgba(99,102,241,0.6)" : "rgba(255,255,255,0.06)",
+                            background: selected ? "rgba(99,102,241,0.12)" : "rgba(255,255,255,0.02)",
+                          }}
+                        >
+                          <span className="text-xl shrink-0">{s.icon}</span>
+                          <div className="flex-1 min-w-0">
+                            <p className={`text-sm font-semibold ${selected ? "text-indigo-300" : "text-white"}`}>
+                              {s.label}
+                            </p>
+                            <p className="text-xs text-slate-500 mt-0.5">{s.subjects}</p>
+                          </div>
+                          {selected && (
+                            <span className="shrink-0 h-5 w-5 rounded-full bg-indigo-500 flex items-center justify-center text-white text-xs">✓</span>
+                          )}
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
                 <div className="flex gap-3 pt-2">
                   <button type="button" onClick={() => setStep(1)} className="btn-ghost flex-1 py-2.5">← Back</button>
-                  <button type="button" onClick={() => setStep(3)} className="btn-primary flex-1 py-2.5">Continue →</button>
+                  <button type="button" onClick={() => setStep(3)}
+                    disabled={!form.al_stream}
+                    className="btn-primary flex-1 py-2.5">Continue →</button>
                 </div>
               </div>
             )}
 
+            {/* Step 3 — Interests */}
             {step === 3 && (
               <div className="space-y-5">
                 <div>
@@ -166,7 +196,7 @@ export default function RegisterPage() {
                         className={`rounded-xl border px-3 py-2.5 text-left text-sm font-medium transition-all ${
                           form.interests.includes(i)
                             ? "border-indigo-500/60 bg-indigo-500/10 text-indigo-300"
-                            : "border-white/08 text-slate-400 hover:border-indigo-500/30 hover:text-slate-200"
+                            : "text-slate-400 hover:border-indigo-500/30 hover:text-slate-200"
                         }`} style={{ borderColor: form.interests.includes(i) ? undefined : "rgba(255,255,255,0.06)" }}>
                         {i}
                       </button>
