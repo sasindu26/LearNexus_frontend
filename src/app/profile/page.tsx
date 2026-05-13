@@ -279,7 +279,7 @@ function SecurityTab() {
             className="space-y-3">
             {[
               { id: 'email',    icon: <Mail size={16} />,           label: 'Change Email',                    sub: user?.email },
-              { id: 'whatsapp', icon: <Phone size={16} />,        label: 'Change WhatsApp Number',          sub: user?.whatsapp_number || 'Not set' },
+              { id: 'whatsapp', icon: <Phone size={16} />,        label: user?.whatsapp_number ? 'Change WhatsApp Number' : 'Add WhatsApp Number',          sub: user?.whatsapp_number || 'Not set' },
               { id: 'parent',   icon: <MessageSquare size={16} />, label: "Parent's WhatsApp Number",        sub: user?.parent_number || 'Not set' },
               { id: 'password', icon: <Shield size={16} />,        label: 'Change Password',                 sub: '••••••••' },
               { id: 'delete',   icon: <Trash2 size={16} />,        label: 'Delete Account',                  sub: 'Permanently remove your account', danger: true },
@@ -376,7 +376,7 @@ function ChangeEmail({ back }: { back: () => void }) {
 }
 
 function ChangeWhatsApp({ back }: { back: () => void }) {
-  const { token, refreshProfile } = useSession();
+  const { user, token, refreshProfile } = useSession();
   const [code,    setCode]   = useState('+94');
   const [num,     setNum]    = useState('');
   const [otp,     setOtp]    = useState('');
@@ -411,7 +411,7 @@ function ChangeWhatsApp({ back }: { back: () => void }) {
   };
 
   return (
-    <SubSection title="Change WhatsApp" onBack={back}>
+    <SubSection title={user?.whatsapp_number ? "Change WhatsApp" : "Add WhatsApp"} onBack={back}>
       {alert && <Alert type={alert.type} msg={alert.msg} />}
       <Field label="New WhatsApp Number">
         <div className="flex gap-2">
