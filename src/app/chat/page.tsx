@@ -33,7 +33,7 @@ export default function ChatPage() {
   const { cachedCourses, updateCourses } = useSession();
 
   const [messages, setMessages] = useState<Message[]>([
-    { id: '1', type: 'bot', text: 'Hello! I am Mento AI. Tell me about your career goals, and I will craft a personalized learning pathway for you.' }
+    { id: '1', type: 'bot', text: 'Hello! I am LearNexus AI. Tell me about your career goals, and I will craft a personalized learning pathway for you.' }
   ]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -160,7 +160,7 @@ export default function ChatPage() {
                 <Bot size={18} />
               </div>
               <div>
-                <h1 className="chat-title">Mento AI</h1>
+                <h1 className="chat-title">LearNexus AI</h1>
                 <p className="chat-subtitle">Powered by Gemini · Knowledge graph grounded</p>
               </div>
             </div>

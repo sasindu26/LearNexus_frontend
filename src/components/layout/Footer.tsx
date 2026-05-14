@@ -14,7 +14,7 @@ const navGroups = [
   {
     label: 'AI Tools',
     links: [
-      { href: '/chat', label: 'Mento AI Chat', icon: <MessageSquare size={14} /> },
+      { href: '/chat', label: 'LearNexus AI Chat', icon: <MessageSquare size={14} /> },
     ],
   },
   {
@@ -41,7 +41,7 @@ export default function Footer() {
               <span className="text-xl font-black text-white tracking-tight">LearNexus</span>
             </Link>
             <p className="text-sm leading-relaxed max-w-xs">
-              Your AI-powered personalised degree pathfinder. Discover the right learning pathway and grow with Mento AI by your side.
+              Your AI-powered personalised degree pathfinder. Discover the right learning pathway and grow with LearNexus AI by your side.
             </p>
             <div className="flex items-center gap-3 mt-6">
               <a href="#" aria-label="GitHub" className="w-9 h-9 rounded-full bg-white/5 hover:bg-brand-primary/20 hover:text-white flex items-center justify-center transition-colors">

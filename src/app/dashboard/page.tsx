@@ -52,7 +52,7 @@ export default function DashboardPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [progressData, setProgressData] = useState<ProgressData | null>(null);
-  const [courseNews, setCourseNews] = useState<{ id: string; title: string; description?: string; url?: string; tags?: string[] }[]>([]);
+  const [courseNews, setCourseNews] = useState<{ id: string; title: string; description?: string; url?: string; tags?: string[]; image?: string }[]>([]);
   const [isNewsLoading, setIsNewsLoading] = useState(false);
   const [learningPatterns, setLearningPatterns] = useState<{
     has_data: boolean;
@@ -476,9 +476,9 @@ export default function DashboardPage() {
                 <div className="bg-white p-16 rounded-3xl border border-slate-100 shadow-sm flex flex-col items-center text-center">
                   <Book size={32} className="text-slate-300 mb-4" />
                   <p className="text-slate-700 font-bold mb-2">Not enrolled in any degree yet.</p>
-                  <p className="text-slate-400 text-sm mb-6">Chat with Mento AI to get course recommendations and start learning.</p>
+                  <p className="text-slate-400 text-sm mb-6">Chat with LearNexus AI to get course recommendations and start learning.</p>
                   <Link href="/chat" className="inline-flex items-center gap-2 bg-brand-primary text-white px-6 py-3 rounded-xl font-bold hover:bg-brand-secondary transition-colors">
-                    Chat with Mento AI
+                    Chat with LearNexus AI
                   </Link>
                 </div>
               ) : filteredModules.length === 0 ? (

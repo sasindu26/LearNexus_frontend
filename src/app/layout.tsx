@@ -9,7 +9,7 @@ import { SessionProvider } from "@/context/SessionContext";
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
 export const metadata: Metadata = {
-  title: "LearNexus | Mento AI",
+  title: "LearNexus | LearNexus AI",
   description: "Your AI-powered personalized degree pathfinder.",
 };
 

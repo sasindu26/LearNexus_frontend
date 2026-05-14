@@ -706,10 +706,10 @@ function CoursesTab({ courses, progress }: { courses: any[]; progress: any[] }) 
         <div className="text-center py-12">
           <BookOpen size={48} className="mx-auto text-slate-200 mb-4" />
           <p className="text-slate-500 font-bold mb-1">No courses yet</p>
-          <p className="text-slate-400 text-sm mb-6">Chat with Mento AI to find your perfect degree!</p>
+          <p className="text-slate-400 text-sm mb-6">Chat with LearNexus AI to find your perfect degree!</p>
           <Link href="/chat"
             className="inline-flex items-center gap-2 bg-brand-primary text-white font-bold px-6 py-3 rounded-xl hover:bg-brand-primary/90 transition-all">
-            Talk to Mento AI <ArrowRight size={16} />
+            Talk to LearNexus AI <ArrowRight size={16} />
           </Link>
         </div>
       ) : (

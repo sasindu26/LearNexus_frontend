@@ -53,9 +53,9 @@ export default function RecommendationsPage() {
           <div className="bg-white rounded-3xl border border-slate-100 shadow-xl p-16 text-center">
             <Book size={48} className="text-slate-200 mx-auto mb-4" />
             <h3 className="text-xl font-black text-slate-800 mb-2">No Recommendations Yet</h3>
-            <p className="text-slate-500 mb-6">Start chatting with Mento AI to get personalized course recommendations.</p>
+            <p className="text-slate-500 mb-6">Start chatting with LearNexus AI to get personalized course recommendations.</p>
             <Link href="/chat" className="inline-flex items-center gap-2 bg-brand-primary text-white px-8 py-4 rounded-2xl font-bold hover:bg-brand-secondary transition-colors">
-              Chat with Mento AI <ArrowRight size={18} />
+              Chat with LearNexus AI <ArrowRight size={18} />
             </Link>
           </div>
         ) : (
@@ -114,10 +114,10 @@ export default function RecommendationsPage() {
           <div className="absolute -right-20 -bottom-40 w-80 h-80 bg-brand-secondary rounded-full blur-[80px] opacity-50"></div>
           <div className="relative z-10 max-w-xl">
             <h3 className="text-3xl font-black text-white mb-4">Want more precise recommendations?</h3>
-            <p className="text-blue-200 text-lg">Continue chatting with Mento AI to refine your learning profile and uncover pathways perfectly tailored to your goals.</p>
+            <p className="text-blue-200 text-lg">Continue chatting with LearNexus AI to refine your learning profile and uncover pathways perfectly tailored to your goals.</p>
           </div>
           <Link href="/chat" className="relative z-10 bg-brand-accent text-white px-8 py-4 rounded-full font-bold text-lg hover:scale-105 active:scale-95 transition-all shadow-lg shadow-teal-500/30 whitespace-nowrap flex items-center gap-2">
-            Chat with Mento <PlayCircle size={20} />
+            Chat with LearNexus AI <PlayCircle size={20} />
           </Link>
         </div>
       </div>

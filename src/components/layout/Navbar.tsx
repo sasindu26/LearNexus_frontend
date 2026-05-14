@@ -99,7 +99,7 @@ export default function Navbar() {
           <div className="hidden lg:flex items-center gap-8">
             <NavLink href="/" icon={<Home size={18} />} label="Home" />
             <NavLink href="/dashboard" icon={<LayoutDashboard size={18} />} label="Dashboard" />
-            <NavLink href="/chat" icon={<MessageSquare size={18} />} label="Mento AI" />
+            <NavLink href="/chat" icon={<MessageSquare size={18} />} label="LearNexus AI" />
             <NavLink href="/tech-updates" icon={<Activity size={18} />} label="Tech Feed" />
             <NavLink href="/career" icon={<TrendingUp size={18} />} label="Career" />
           </div>
