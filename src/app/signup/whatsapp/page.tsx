@@ -56,6 +56,7 @@ export default function WhatsAppSetupPage() {
   const [loading,       setLoading]       = useState(false);
   const [error,         setError]         = useState('');
   const [otpError,      setOtpError]      = useState('');
+  const [skipWhatsApp,  setSkipWhatsApp]  = useState(false);
 
   const fullPhone  = `${countryCode}${phoneNumber.replace(/^0/, '')}`;
   const fullParent = parentNumber ? `${parentCode}${parentNumber.replace(/^0/, '')}` : '';
@@ -89,6 +90,11 @@ export default function WhatsAppSetupPage() {
   };
 
   const complete = async () => {
+    if (skipWhatsApp) {
+      router.push('/');
+      return;
+    }
+
     setLoading(true);
     setError('');
     try {
@@ -117,7 +123,7 @@ export default function WhatsAppSetupPage() {
             <MessageSquare size={28} className="text-white" />
           </div>
           <h1 className="text-3xl font-black text-slate-800 tracking-tight">Connect WhatsApp</h1>
-          <p className="text-slate-500 mt-2 font-medium">Get updates, alerts, and reminders via WhatsApp</p>
+          <p className="text-slate-500 mt-2 font-medium">Get updates, alerts, and reminders via WhatsApp <span className="text-slate-400">(optional)</span></p>
         </div>
 
         <div className="bg-white rounded-3xl shadow-xl border border-slate-100 p-8 space-y-6">
@@ -227,17 +233,31 @@ export default function WhatsAppSetupPage() {
             />
           </div>
 
-          {/* Complete Setup — only enabled after WhatsApp is verified */}
+          {/* Complete Setup — enabled if verified OR skipped */}
           <div className="pt-2">
-            {!verified && (
+            {!verified && !skipWhatsApp && (
               <p className="text-center text-xs text-slate-400 font-medium mb-3">
-                Verify your WhatsApp number above to continue
+                Verify your WhatsApp number above to continue, or choose to skip.
               </p>
             )}
+
+            {/* Skip Checkbox */}
+            <label className="flex items-center justify-center gap-2 mb-4 cursor-pointer group">
+              <input
+                type="checkbox"
+                checked={skipWhatsApp}
+                onChange={(e) => setSkipWhatsApp(e.target.checked)}
+                className="w-4 h-4 text-brand-secondary rounded border-slate-300 focus:ring-brand-secondary cursor-pointer"
+              />
+              <span className="text-sm font-semibold text-slate-500 group-hover:text-slate-700 transition-colors">
+                Skip for now <span className="text-xs font-normal text-slate-400">(add later in Profile Settings)</span>
+              </span>
+            </label>
+
             <button
               type="button"
               onClick={complete}
-              disabled={loading || !verified}
+              disabled={loading || (!verified && !skipWhatsApp)}
               className="w-full flex items-center justify-center gap-2 bg-brand-primary hover:bg-brand-primary/90 disabled:opacity-40 disabled:cursor-not-allowed text-white font-bold py-3.5 rounded-xl transition-all"
             >
               {loading ? <Loader2 size={18} className="animate-spin" /> : 'Complete Setup'}

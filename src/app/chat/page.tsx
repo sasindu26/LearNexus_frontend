@@ -42,10 +42,18 @@ export default function ChatPage() {
   
   // Tab state for the popup (to switch between academic years)
   const [activeYearTab, setActiveYearTab] = useState<string>('1');
-  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    if (scrollContainerRef.current) {
+      const scrollHeight = scrollContainerRef.current.scrollHeight;
+      const height = scrollContainerRef.current.clientHeight;
+      const maxScrollTop = scrollHeight - height;
+      scrollContainerRef.current.scrollTo({
+        top: maxScrollTop > 0 ? maxScrollTop : 0,
+        behavior: 'smooth'
+      });
+    }
   };
 
   useEffect(() => {
@@ -164,7 +172,7 @@ export default function ChatPage() {
         </div>
 
         {/* Messages Area */}
-        <div className="chat-messages-area">
+        <div className="chat-messages-area" ref={scrollContainerRef}>
           <div className="chat-messages-inner">
             <AnimatePresence initial={false}>
               {messages.map((msg) => (
@@ -242,7 +250,7 @@ export default function ChatPage() {
               </motion.div>
             )}
 
-            <div ref={messagesEndRef} className="chat-scroll-anchor" />
+            {/* Scroll anchor removed, using container scrolling instead */}
           </div>
         </div>
 

@@ -762,19 +762,23 @@ html.dark .chat-modal-course-desc { color: #94a3b8; }
 }
 
 .chat-modal-modules-section {
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  border-top: 1px solid #e2e8f0;
   padding-top: 1.5rem;
+}
+html.dark .chat-modal-modules-section {
+  border-top-color: rgba(255, 255, 255, 0.08);
 }
 
 .chat-modal-modules-title {
   font-weight: 700;
-  color: #f1f5f9;
+  color: #1e293b;
   margin-bottom: 1rem;
   display: flex;
   align-items: center;
   gap: 0.5rem;
   font-size: 0.95rem;
 }
+html.dark .chat-modal-modules-title { color: #f1f5f9; }
 
 .chat-modal-modules-icon {
   color: #818cf8;
@@ -801,13 +805,21 @@ html.dark .chat-modal-course-desc { color: #94a3b8; }
   font-size: 0.8rem;
   white-space: nowrap;
   transition: all 0.2s;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid #e2e8f0;
   background: transparent;
-  color: #94a3b8;
+  color: #64748b;
   cursor: pointer;
+}
+html.dark .chat-modal-year-tab {
+  border-color: rgba(255, 255, 255, 0.1);
+  color: #94a3b8;
 }
 
 .chat-modal-year-tab:hover {
+  border-color: #cbd5e1;
+  color: #1e293b;
+}
+html.dark .chat-modal-year-tab:hover {
   border-color: rgba(129, 140, 248, 0.4);
   color: #f1f5f9;
 }
@@ -830,27 +842,37 @@ html.dark .chat-modal-course-desc { color: #94a3b8; }
 
 .chat-modal-module-grid::-webkit-scrollbar { width: 4px; }
 .chat-modal-module-grid::-webkit-scrollbar-track { background: transparent; }
-.chat-modal-module-grid::-webkit-scrollbar-thumb { background: #334155; border-radius: 2px; }
+.chat-modal-module-grid::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 2px; }
+html.dark .chat-modal-module-grid::-webkit-scrollbar-thumb { background: #334155; }
 
 .chat-modal-module-card {
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
   padding: 1rem;
   border-radius: 0.75rem;
   transition: all 0.2s;
 }
+html.dark .chat-modal-module-card {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.08);
+}
 
 .chat-modal-module-card:hover {
+  border-color: #cbd5e1;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+html.dark .chat-modal-module-card:hover {
   border-color: rgba(129, 140, 248, 0.3);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 .chat-modal-module-name {
   font-weight: 700;
-  color: #f1f5f9;
+  color: #1e293b;
   font-size: 0.85rem;
   margin-bottom: 0.25rem;
 }
+html.dark .chat-modal-module-name { color: #f1f5f9; }
 
 .chat-modal-module-desc {
   font-size: 0.75rem;

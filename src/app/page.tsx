@@ -34,7 +34,7 @@ interface ProgressData {
 }
 
 export default function HomePage() {
-  const { isLoggedIn, user, token } = useSession();
+  const { isLoggedIn, user, token, logout } = useSession();
   const [progress, setProgress] = useState<ProgressData | null>(null);
   const [loading, setLoading] = useState(true);
   const [techArticles, setTechArticles] = useState<TechArticle[]>([]);
@@ -53,8 +53,10 @@ export default function HomePage() {
         if (res.data.status === 'success' && res.data.courses.length > 0) {
           setProgress(res.data.courses[0]);
         }
-      } catch (error) {
-        console.error('Failed to fetch progress:', error);
+      } catch (error: any) {
+        if (error?.response?.status === 401) {
+          logout();
+        }
       } finally {
         setLoading(false);
       }
@@ -169,7 +171,7 @@ export default function HomePage() {
               </Link>
             ) : (
               <Link href="/chat" className="inline-flex items-center justify-center gap-2 w-full bg-slate-50 hover:bg-brand-primary hover:text-white text-brand-primary font-bold py-4 rounded-xl transition-colors border border-slate-100">
-                <MessageSquare size={20} /> Find Your Degree with Mento AI
+                <MessageSquare size={20} /> Find Your Degree with LearNexus AI
               </Link>
             )}
           </motion.div>

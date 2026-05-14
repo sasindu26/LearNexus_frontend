@@ -6,6 +6,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, ChevronUp, CheckCircle, Circle, PlayCircle, Loader2, Bot, Send, ArrowLeft, ExternalLink, Newspaper } from 'lucide-react';
 import api from '@/lib/api';
 
+function stripHtml(html: string) {
+  return html.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+}
+
 // --- Types ---
 interface Article {
   id: string;
@@ -379,24 +383,37 @@ export default function ModuleContentPage() {
                   href={article.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex flex-col gap-1.5 px-5 py-4 hover:bg-slate-50 transition-colors group"
+                  className="flex gap-3.5 px-5 py-4 hover:bg-gradient-to-r hover:from-slate-50 hover:to-white transition-all group"
                 >
-                  {article.tags && article.tags.length > 0 && (
-                    <span className="text-[10px] font-bold uppercase tracking-widest text-brand-secondary">
-                      {article.tags[0]}
-                    </span>
+                  {/* Thumbnail */}
+                  {(article as any).image && (
+                    <div className="w-14 h-14 rounded-xl overflow-hidden shrink-0 bg-slate-100 shadow-sm group-hover:shadow-md transition-shadow">
+                      <img
+                        src={(article as any).image}
+                        alt=""
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        onError={e => { (e.target as HTMLImageElement).parentElement!.style.display = 'none'; }}
+                      />
+                    </div>
                   )}
-                  <p className="text-sm font-bold text-slate-700 group-hover:text-brand-secondary transition-colors leading-snug line-clamp-2">
-                    {article.title}
-                  </p>
-                  {article.description && (
-                    <p className="text-xs text-slate-400 line-clamp-2 leading-relaxed">
-                      {article.description}
+                  <div className="flex-1 min-w-0">
+                    {article.tags && article.tags.length > 0 && (
+                      <span className="inline-block text-[9px] font-extrabold uppercase tracking-widest text-white bg-gradient-to-r from-brand-secondary to-brand-primary px-2 py-0.5 rounded-full mb-1.5">
+                        {article.tags[0]}
+                      </span>
+                    )}
+                    <p className="text-[13px] font-bold text-slate-700 group-hover:text-brand-secondary transition-colors leading-snug line-clamp-2">
+                      {article.title}
                     </p>
-                  )}
-                  <span className="flex items-center gap-1 text-[11px] font-bold text-brand-secondary mt-0.5">
-                    Read <ExternalLink size={10} />
-                  </span>
+                    {article.description && (
+                      <p className="text-[11px] text-slate-400 line-clamp-1 leading-relaxed mt-1">
+                        {stripHtml(article.description)}
+                      </p>
+                    )}
+                    <span className="flex items-center gap-1 text-[10px] font-bold text-brand-secondary/70 group-hover:text-brand-secondary mt-1.5 transition-colors">
+                      Read article <ExternalLink size={9} />
+                    </span>
+                  </div>
                 </a>
               ))}
             </div>

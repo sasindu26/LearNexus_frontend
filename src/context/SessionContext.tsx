@@ -69,8 +69,14 @@ export const SessionProvider: React.FC<{ children: ReactNode }> = ({ children })
               setUser(fresh);
               localStorage.setItem('mento_user', JSON.stringify(fresh));
             }
-          } catch {
-            // Silently ignore — stale localStorage data still works
+          } catch (err: any) {
+            if (err?.response?.status === 401) {
+              setToken(null);
+              setUser(null);
+              localStorage.removeItem('mento_token');
+              localStorage.removeItem('mento_user');
+              localStorage.removeItem('mento_courses');
+            }
           }
         }
       } catch (error) {
