@@ -2,7 +2,7 @@ export const dynamic = 'force-dynamic'
 
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
@@ -32,7 +32,7 @@ interface ProgressData {
   progress_pct: number;
 }
 
-export default function DashboardPage() {
+function DashboardContent() {
   const { user, token } = useSession();
   const searchParams = useSearchParams();
   const [activeTab, setActiveTab] = useState<'overview' | 'insights' | 'modules'>(
@@ -652,5 +652,13 @@ export default function DashboardPage() {
         </AnimatePresence>
       </div>
     </div>
+  );
+}
+
+export default function DashboardPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div></div>}>
+      <DashboardContent />
+    </Suspense>
   );
 }
