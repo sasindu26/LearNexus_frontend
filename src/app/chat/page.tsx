@@ -72,10 +72,10 @@ export default function ChatPage() {
 
     try {
       // Send the current message and the entire previous chat history
-      const response = await api.post('/chat', { 
+      const response = await api.post('/chat', {
         message: currentInput,
         history: messages.map(m => ({ role: m.type, content: m.text }))
-      });
+      }, { timeout: 120000 });
       
       if (response.data && response.data.message) {
         setMessages(prev => [...prev, {
@@ -91,12 +91,15 @@ export default function ChatPage() {
           setTimeout(() => setShowPopup(true), 1000);
         }
       }
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Chat error:', error);
+      const isTimeout = error && typeof error === 'object' && 'code' in error && error.code === 'ECONNABORTED';
       setMessages(prev => [...prev, {
         id: (Date.now() + 1).toString(),
         type: 'bot',
-        text: "I'm sorry, I couldn't connect to the backend server. Please try again later."
+        text: isTimeout
+          ? "The AI is still warming up on first launch. Please wait 30 seconds and try again."
+          : "I'm sorry, I couldn't connect to the backend server. Please try again later."
       }]);
     } finally {
       setIsLoading(false);
